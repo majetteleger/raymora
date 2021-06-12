@@ -4,23 +4,29 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
-	[SerializeField] private float _sensitivityX = 2f;
-	[SerializeField] private float _sensitivityY = 2f;
-	[SerializeField] private float _minimumX = -360f;
-	[SerializeField] private float _maximumX = 360f;
-	[SerializeField] private float _minimumY = -60f;
-	[SerializeField] private float _maximumY = 60f;
-	[SerializeField] private float _maxTargetDistance = 100f;
+	[SerializeField] private float _sensitivityX = 0f;
+	[SerializeField] private float _sensitivityY = 0f;
+	[SerializeField] private float _minimumX = 0f;
+	[SerializeField] private float _maximumX = 0f;
+	[SerializeField] private float _minimumY = 0f;
+	[SerializeField] private float _maximumY = 0f;
+	[SerializeField] private float _maxTargetDistance = 0f;
+	[SerializeField] private float _joinTime = 0f;
+	[SerializeField] private AnimationCurve _joinCurve = null;
 
-	private float _rotationX = 0f;
-	private float _rotationY = 0f;
+	private float _rotationX;
+	private float _rotationY;
 	private List<float> _rotArrayY = new List<float>();
 	private List<float> _rotArrayX = new List<float>();
-	private float _rotAverageX = 0f;
-	private float _rotAverageY = 0f;
+	private float _rotAverageX;
+	private float _rotAverageY;
 	private int _frameCounter = 20;
 	private Quaternion _originalRotation;
 	private Fish _targetFish;
+	private Fish _joinedFish;
+	private float _joinTimer;
+	private Vector3 _joinStartPosition;
+	private Transform _joinTarget;
 
 	private void Start()
 	{
@@ -58,8 +64,29 @@ public class Player : MonoBehaviour
 
 			if(_targetFish != null)
 			{
-				// join
+				_joinTarget = _targetFish.transform;
+				_joinStartPosition = transform.position;
 			}
+		}
+
+		if(_joinTarget != null)
+		{
+			_joinTimer += Time.deltaTime / _joinTime;
+
+			transform.position = Vector3.Lerp(_joinStartPosition, _joinTarget.position, _joinCurve.Evaluate(_joinTimer));
+
+			if(_joinTimer >= _joinTime)
+			{
+				_joinedFish = _joinTarget.GetComponent<Fish>();
+
+				_joinTarget = null;
+				_joinTimer = 0f;
+			}
+		}
+
+		if (_joinTarget == null && _joinedFish != null)
+		{
+			transform.position = _joinedFish.transform.position;
 		}
 	}
 

@@ -19,7 +19,7 @@ public class Fish : MonoBehaviour
 
 	private void Update()
 	{
-		transform.RotateAround(Vector3.zero, Vector3.down, _rotationspeed);
+		transform.RotateAround(Vector3.zero, Vector3.down, _rotationspeed * Time.deltaTime);
 	}
 
 	public void TargetOn()
