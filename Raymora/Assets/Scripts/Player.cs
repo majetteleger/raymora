@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
+	//[SerializeField] private float _maxHealth = 0f;
 	[SerializeField] private float _sensitivityX = 0f;
 	[SerializeField] private float _sensitivityY = 0f;
 	[SerializeField] private float _minimumX = 0f;
@@ -133,7 +134,7 @@ public class Player : MonoBehaviour
 
 	private void UpdateTarget()
 	{
-		if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, _maxTargetDistance) && hit.transform.tag == "Fish")
+		if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, _maxTargetDistance, LayerMask.GetMask("Fish")))
 		{
 			if (_targetFish == null)
 			{
